@@ -1,6 +1,5 @@
 package com.jgw.gameclub;
 
-import com.jgw.framework.Game;
 import com.jgw.framework.Image;
 import com.jgw.framework.Music;
 import com.jgw.framework.Sound;
@@ -17,7 +16,7 @@ public class Assets {
 	public static Sound click;
 	public static Music theme;
 	
-	public static void load(Game game) {
+	public static void load(MyGame game) {
 		theme  = game.getAudio().createMusic("menutheme.mp3");
 		theme.setLooping(true);
 		theme.setVolume(0.85f);

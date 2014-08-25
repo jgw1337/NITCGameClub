@@ -10,7 +10,8 @@ import android.util.Log;
 import com.jgw.framework.Screen;
 import com.jgw.framework.implementation.AndroidGame;
 
-public class Game extends AndroidGame {
+public class MyGame extends AndroidGame {
+
 	public static String map;
 	boolean firstTimeCreate = true;
 
@@ -42,7 +43,7 @@ public class Game extends AndroidGame {
 		} finally {
 			try {
 				is.close();
-			} catch (Exception e2) {
+			} catch (IOException e) {
 				Log.w("LOG", e.getMessage());
 			}
 		}

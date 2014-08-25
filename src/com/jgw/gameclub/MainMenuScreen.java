@@ -21,7 +21,7 @@ public class MainMenuScreen extends Screen {
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
 			if (event.type == TouchEvent.TOUCH_UP) {
-				if (inBounds(event, 0, 0, 250, 250)) {
+				if (inBounds(event, 50, 350, 250, 450)) {
 					game.setScreen(new GameScreen(game));
 				}
 			}
@@ -29,7 +29,7 @@ public class MainMenuScreen extends Screen {
 	}
 
 	private boolean inBounds(TouchEvent event, int x, int y, int width, int height) {
-		if (event.x > x && event.x < x + width + 1 && event.y > y && event.y < y + height - 1) {
+		if (event.x > x && event.x < x + width - 1 && event.y > y && event.y < y + height - 1) {
 			return true;
 		} else {
 			return false;
@@ -44,19 +44,16 @@ public class MainMenuScreen extends Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		
 	}
 

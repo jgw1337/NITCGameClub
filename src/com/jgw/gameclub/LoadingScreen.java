@@ -22,6 +22,12 @@ public class LoadingScreen extends Screen {
 		Assets.character3 = g.newImage("character3.png", ImageFormat.ARGB4444);
 		Assets.characterJump = g.newImage("characterjumped.png", ImageFormat.ARGB4444);
 		Assets.characterDown = g.newImage("characterdown.png", ImageFormat.ARGB4444);
+
+		Assets.heliboy1 = g.newImage("heliboy1.png", ImageFormat.ARGB4444);
+		Assets.heliboy2 = g.newImage("heliboy2.png", ImageFormat.ARGB4444);
+		Assets.heliboy3 = g.newImage("heliboy3.png", ImageFormat.ARGB4444);
+		Assets.heliboy4 = g.newImage("heliboy4.png", ImageFormat.ARGB4444);
+		Assets.heliboy5 = g.newImage("heliboy5.png", ImageFormat.ARGB4444);
 		
 		Assets.tileDirt = g.newImage("tiledirt.png", ImageFormat.RGB565);
 		Assets.tileGrassTop = g.newImage("tilegrasstop.png", ImageFormat.RGB565);
@@ -44,25 +50,21 @@ public class LoadingScreen extends Screen {
 
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void backButton() {
-		// TODO Auto-generated method stub
 		
 	}
 	
