@@ -39,7 +39,7 @@ public class GameScreen extends Screen {
 	 */
 
 	int livesLeft = 1;
-	Paint paint, paint2;
+	Paint paint, paint2, paintDebug;
 
 	public GameScreen(Game game) {
 		super(game);
@@ -51,9 +51,11 @@ public class GameScreen extends Screen {
 		bg2 = new Background(2160, 0);
 		
 		robot = new Robot();
+		robot.setCenterX(100);
+		robot.setCenterY(-100);
 		
 		hb1 = new Heliboy(340, 360);
-		hb1 = new Heliboy(700, 360);
+		hb2 = new Heliboy(700, 360);
 
 		character = Assets.character;
 		character2 = Assets.character2;
@@ -99,7 +101,13 @@ public class GameScreen extends Screen {
 		paint2.setTextAlign(Paint.Align.CENTER);
 		paint2.setAntiAlias(true);
 		paint2.setColor(Color.WHITE);
-	}
+
+		paintDebug = new Paint();
+		paintDebug.setTextSize(30);
+		paintDebug.setTextAlign(Paint.Align.CENTER);
+		paintDebug.setAntiAlias(true);
+		paintDebug.setColor(Color.RED);
+}
 
 	private void loadMap() {
 		ArrayList lines = new ArrayList();
@@ -120,7 +128,8 @@ public class GameScreen extends Screen {
 			}
 			
 		}
-		
+		scanner.close();
+
 		height = lines.size();
 		for (int j = 0; j < 12; j++) {
 			String line = (String) lines.get(j);
@@ -156,26 +165,29 @@ public class GameScreen extends Screen {
 
 	private void updateReady(List<TouchEvent> touchEvents) {
 		if (touchEvents.size() > 0) {
-			state = GameState.Ready;
+			state = GameState.Running;
 		}
 	}
 
 	private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
+		Graphics g = game.getGraphics();
+
 		// 1) All touch input handled here
 		int len = touchEvents.size();
 		for (int i = 0; i < len; i++) {
 			TouchEvent event = touchEvents.get(i);
+			g.drawString("x", 100, 100, paintDebug);
 			switch (event.type) {
 			case TouchEvent.TOUCH_DOWN:
-				if (inBounds(event, 0, 285, 65, 65)) {
+				if (inBounds(event, 0, 800-65-65-65, 65, 65)) {
 					robot.jump();
 					currentSprite = anim.getImage();
 					robot.setDucked(false);
-				} else if (inBounds(event, 0, 350, 65, 65)) {
+				} else if (inBounds(event, 0, 800-65-65, 65, 65)) {
 					if (!robot.isDucked() && !robot.isJumped()) {
 						robot.shoot();
 					}
-				} else if (inBounds(event, 0, 415, 65, 65) && !robot.isJumped()) {
+				} else if (inBounds(event, 0, 800-65, 65, 65) && !robot.isJumped()) {
 					currentSprite = Assets.characterDown;
 					robot.setDucked(true);
 					robot.setSpeedX(0);
@@ -218,7 +230,7 @@ public class GameScreen extends Screen {
 			currentSprite = anim.getImage();
 		}
 		
-		ArrayList projectiles = robot.getProjectiles();
+		ArrayList<Projectile> projectiles = robot.getProjectiles();
 		for (int i = 0; i < projectiles.size(); i++) {
 			Projectile p = (Projectile) projectiles.get(i);
 			if (p.isVisible()) {
@@ -236,7 +248,7 @@ public class GameScreen extends Screen {
 		
 		animate();
 		
-		if (robot.getCenterX() > 500) {
+		if (Robot.getCenterY() > 500) {
 			state = GameState.GameOver;
 		}
 	}
@@ -288,9 +300,9 @@ public class GameScreen extends Screen {
 			TouchEvent event = touchEvents.get(i);
 			switch (event.type) {
 			case TouchEvent.TOUCH_DOWN:
-				if (inBounds(event, 0, 0, 800, 480)) {
+				if (inBounds(event, 0, 0, 1280, 800)) {
 					nullify();
-					game.setScreen(new MainMenuScreen(game));
+					goToMenu();
 					return;
 				}
 				break;
@@ -299,10 +311,12 @@ public class GameScreen extends Screen {
 	}
 
 	private void nullify() {
+		robot = null;
 		paint = null;
+		paint2 = null;
+		paintDebug = null;
 		bg1 = null;
 		bg2 = null;
-		robot = null;
 		hb1 = null;
 		hb2 = null;
 		currentSprite = null;
@@ -316,6 +330,8 @@ public class GameScreen extends Screen {
 		heliboy5 = null;
 		anim = null;
 		hAnim = null;
+		livesLeft = 0;
+		tileArray.clear();
 
 		// Garbage collector
 		System.gc();
@@ -329,14 +345,14 @@ public class GameScreen extends Screen {
 		g.drawImage(Assets.background, bg2.getBgX(), bg2.getBgY());
 		paintTiles(g);
 		
-		ArrayList projectiles = robot.getProjectiles();
+		ArrayList<Projectile> projectiles = robot.getProjectiles();
 		for (int i = 0; i < projectiles.size(); i++) {
 			Projectile p = (Projectile) projectiles.get(i);
 			g.drawRect(p.getX(), p.getY(), 10, 5, Color.YELLOW);
 		}
 
 		// 1) Draw game elements
-		g.drawImage(currentSprite, robot.getCenterX() - 61, robot.getCenterY() - 63);
+		g.drawImage(currentSprite, Robot.getCenterX() - 61, Robot.getCenterY() - 63);
 		g.drawImage(hAnim.getImage(), hb1.getCenterX() - 48, hb1.getCenterY() - 48);
 		g.drawImage(hAnim.getImage(), hb2.getCenterX() - 48, hb2.getCenterY() - 48);
 
@@ -355,6 +371,7 @@ public class GameScreen extends Screen {
 			drawGameOverUI();
 			break;
 		}
+		
 	}
 
 	private void paintTiles(Graphics g) {
@@ -395,8 +412,8 @@ public class GameScreen extends Screen {
 		Graphics g = game.getGraphics();
 		
 		g.drawRect(0, 0, 1281, 801, Color.BLACK);
-		g.drawString("GAME OVER", 400, 240, paint2);
-		g.drawString("Tap to return.", 400, 290, paint2);
+		g.drawString("GAME OVER", 400, 165, paint2);
+		g.drawString("Tap to return.", 400, 360, paint2);
 	}
 
 	@Override

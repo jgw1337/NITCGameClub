@@ -9,7 +9,7 @@ public class Robot {
 	final int MOVESPEED = 5;
 
 	private static int centerX = 100;
-	private static int centerY = 377;
+	private static int centerY = -100;
 	private boolean jumped = false;
 	private boolean movingLeft = false;
 	private boolean movingRight = false;
